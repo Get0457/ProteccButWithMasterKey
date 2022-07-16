@@ -40,8 +40,8 @@ namespace Protecc.Services
             byte[] Key;
             Key = Base32Encoding.ToBytes(Vault.Retrieve(vaultItem.Resource, vaultItem.Name).Password.DecrpytWithMasterKey());
             return Key;
-
         }
+
         protected internal async static void RemoveItem(VaultItem vaultItem)
         {
             Vault.Remove(Vault.Retrieve(vaultItem.Resource, vaultItem.Name));
@@ -61,6 +61,27 @@ namespace Protecc.Services
                     }
                 });
             });
+        }
+
+        protected internal async static Task<List<Account>> ExportAccountsAsync()
+        {
+            List<Account> Accounts = new();
+            await Task.Run(async () =>
+            {
+                await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    CredentialList.Clear();
+                    foreach (var i in Vault.RetrieveAll())
+                    {
+                        Accounts.Add(new Account() { 
+                            Name = i.UserName,
+                            Resource = i.Resource,
+                            Key = i.Password
+                        });
+                    }
+                });
+            });
+            return Accounts;
         }
     }
 }

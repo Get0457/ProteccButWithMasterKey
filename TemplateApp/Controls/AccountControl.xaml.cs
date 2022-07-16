@@ -8,6 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using TextBlockFX;
+using TextBlockFX.Win2D.UWP.Effects;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -34,7 +36,10 @@ namespace Protecc.Controls
         public VaultItem AccountVaultItem
         {
             get { return (VaultItem)GetValue(AccountVaultItemProperty); }
-            set { SetValue(AccountVaultItemProperty, value); }
+            set { 
+                SetValue(AccountVaultItemProperty, value);
+                TOTP = new TOTPHelper(AccountVaultItem);
+            }
         }
         public static readonly DependencyProperty AccountVaultItemProperty =
                    DependencyProperty.Register("AccountVaultItem", typeof(VaultItem), typeof(AccountControl), null);
@@ -42,32 +47,32 @@ namespace Protecc.Controls
         public AccountControl()
         {
             this.InitializeComponent();
+            Bindings.Update();
             Window.Current.Activated += Current_Activated;
         }
-     
+
         private void Current_Activated(object sender, WindowActivatedEventArgs e)
         {
-            if(e.WindowActivationState == CoreWindowActivationState.Deactivated)
+            if (new SettingsClass().FocusBlur)
             {
-                WasChecked = (bool)PrivacyButton.IsChecked;
-                PrivacyButton.IsChecked = true;
+                if (e.WindowActivationState == CoreWindowActivationState.Deactivated)
+                {
+                    WasChecked = (bool)PrivacyButton.IsChecked;
+                    PrivacyButton.IsChecked = true;
+                }
+                else
+                {
+                    PrivacyButton.IsChecked = WasChecked;
+                    WasChecked = false;
+                }
             }
-            else
-            {
-                PrivacyButton.IsChecked = WasChecked;
-                WasChecked = false;
-            }
+            Bindings.Update();
         }
 
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
             TOTP.Dispose();
             CredentialService.RemoveItem(AccountVaultItem);
-        }
-
-        private void Content_Loaded(object sender, RoutedEventArgs e)
-        {
-            TOTP = new TOTPHelper(CodeBlock, Progress, AccountVaultItem);
         }
 
         private async void Copy_Click(object sender, RoutedEventArgs e)
@@ -88,5 +93,9 @@ namespace Protecc.Controls
             await Task.Delay(2000);
             CopyIcon.Symbol = Fluent.Icons.FluentSymbol.Copy20;
         }
+
+        private void Content_Unloaded(object sender, RoutedEventArgs e) => TOTP.Dispose();
+
+        //private void Content_Loaded(object sender, RoutedEventArgs e) => TOTP = new TOTPHelper(CodeBlock, Progress, AccountVaultItem);
     }
 }

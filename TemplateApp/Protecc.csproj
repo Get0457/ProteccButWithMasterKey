@@ -126,17 +126,25 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classes\Account.cs" />
+    <Compile Include="Classes\SettingsClass.cs" />
     <Compile Include="Classes\VaultItem.cs" />
     <Compile Include="Controls\AccountControl.xaml.cs">
       <DependentUpon>AccountControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SettingsControl.xaml.cs">
+      <DependentUpon>SettingsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ErrorPage.xaml.cs">
       <DependentUpon>ErrorPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ColorUIHelper.cs" />
     <Compile Include="Helpers\DataHelper.cs" />
+    <Compile Include="Helpers\ExportHelper.cs" />
     <Compile Include="Helpers\EncryptionHelper.cs" />
     <Compile Include="Helpers\TOTPHelper.cs" />
+    <Compile Include="OOBEPage.xaml.cs">
+      <DependentUpon>OOBEPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ScanQRPage.xaml.cs">
       <DependentUpon>ScanQRPage.xaml</DependentUpon>
     </Compile>
@@ -156,6 +164,9 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Images\LaunchOOBE.png" />
+    <Content Include="Assets\Images\PrivacyOOBE.png" />
+    <Content Include="Assets\Images\SettingsOOBE.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
     <Content Include="Assets\LargeTile.scale-125.png" />
     <Content Include="Assets\LargeTile.scale-150.png" />
@@ -222,6 +233,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\SettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ErrorPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -229,6 +244,10 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OOBEPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ScanQRPage.xaml">
       <SubType>Designer</SubType>
@@ -262,7 +281,10 @@
       <Version>1.2.2</Version>
     </PackageReference>
     <PackageReference Include="TextBlockFX.Win2D.UWP">
-      <Version>1.0.0</Version>
+      <Version>1.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="YamlDotNet">
+      <Version>11.2.1</Version>
     </PackageReference>
     <PackageReference Include="ZXing.Net.Mobile">
       <Version>3.1.0-beta2</Version>
