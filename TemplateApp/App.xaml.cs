@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -24,6 +25,10 @@ namespace Protecc
     /// </summary>
     sealed partial class App : Application
     {
+        public static Aes MasterKey = null;
+        public static ICryptoTransform KeyEncrpyter;
+        public static ICryptoTransform KeyDecrypter;
+        //public static Aes MasterKey = null;
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().

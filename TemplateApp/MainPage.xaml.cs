@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
@@ -36,7 +37,30 @@ namespace Protecc
         {
             this.InitializeComponent();
             WindowService.Initialize(AppTitleBar, AppTitle);
-            CredentialService.RefreshListAsync();
+            if (App.KeyEncrpyter is null || App.KeyDecrypter is null)
+            {
+                var passwordBox = new PasswordBox();
+                ContentDialog cd = new()
+                {
+                    Title = "Please Enter the Master Password",
+                    Content = passwordBox,
+                    PrimaryButtonText = "Okay"
+                };
+                cd.ShowAsync().AsTask().ContinueWith(async delegate
+                {
+                    var text = passwordBox.Password;
+                    passwordBox.Password = "";
+                    using var sha = new SHA256Managed();
+                    byte[] textData = System.Text.Encoding.UTF8.GetBytes(text);
+                    text = null;
+                    byte[] hash = sha.ComputeHash(textData);
+                    var aes = Aes.Create();
+                    aes.Key = hash;
+                    App.KeyEncrpyter = aes.CreateEncryptor();
+                    App.KeyDecrypter = aes.CreateEncryptor();
+                    await CredentialService.RefreshListAsync();
+                });
+            }
         }
 
         private void EnterKey_Click(object sender, RoutedEventArgs e)

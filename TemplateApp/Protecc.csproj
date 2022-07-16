@@ -135,6 +135,7 @@
     </Compile>
     <Compile Include="Helpers\ColorUIHelper.cs" />
     <Compile Include="Helpers\DataHelper.cs" />
+    <Compile Include="Helpers\EncryptionHelper.cs" />
     <Compile Include="Helpers\TOTPHelper.cs" />
     <Compile Include="ScanQRPage.xaml.cs">
       <DependentUpon>ScanQRPage.xaml</DependentUpon>

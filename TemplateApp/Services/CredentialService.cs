@@ -32,12 +32,13 @@ namespace Protecc.Services
         private static PasswordVault Vault = new PasswordVault();
         public static ObservableCollection<VaultItem> CredentialList = new ObservableCollection<VaultItem>();
 
-        protected internal static void StoreNewCredential(string Name, string Key, Color Color, int TimeIndex, int DigitsIndex, int Encryptionindex) => Vault.Add(new PasswordCredential(DataHelper.Encode(Color, TimeIndex, DigitsIndex, Encryptionindex), Name, Key));
+        protected internal static void StoreNewCredential(string Name, string Key, Color Color, int TimeIndex, int DigitsIndex, int Encryptionindex)
+            => Vault.Add(new PasswordCredential(DataHelper.Encode(Color, TimeIndex, DigitsIndex, Encryptionindex), Name, Key.EncryptWithMasterKey()));
 
         protected internal static byte[] GetKey(VaultItem vaultItem)
         {
             byte[] Key;
-            Key = Base32Encoding.ToBytes(Vault.Retrieve(vaultItem.Resource, vaultItem.Name).Password);
+            Key = Base32Encoding.ToBytes(Vault.Retrieve(vaultItem.Resource, vaultItem.Name).Password.DecrpytWithMasterKey());
             return Key;
 
         }
