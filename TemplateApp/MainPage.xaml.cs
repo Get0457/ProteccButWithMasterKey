@@ -42,26 +42,37 @@ namespace Protecc
             WindowService.Initialize(AppTitleBar, AppTitle);
             if (App.KeyEncrpyter is null || App.KeyDecrypter is null)
             {
-                var passwordBox = new PasswordBox();
+                var passwordBox = new PasswordBox
+                {
+                    //Style = (Style)new AddAccountPage().Resources["KeyGlowPasswordBoxStyle"]
+                };
                 ContentDialog cd = new()
                 {
                     Title = "Please Enter the Master Password",
                     Content = passwordBox,
                     PrimaryButtonText = "Okay"
                 };
+
+
                 cd.ShowAsync().AsTask().ContinueWith(async delegate
                 {
-                    var text = passwordBox.Password;
-                    passwordBox.Password = "";
-                    using var sha = new SHA256Managed();
-                    byte[] textData = System.Text.Encoding.UTF8.GetBytes(text);
-                    text = null;
-                    byte[] hash = sha.ComputeHash(textData);
-                    var aes = Aes.Create();
-                    aes.Key = hash;
-                    App.KeyEncrpyter = aes.CreateEncryptor();
-                    App.KeyDecrypter = aes.CreateEncryptor();
-                    await CredentialService.RefreshListAsync();
+                    await Dispatcher.TryRunAsync(CoreDispatcherPriority.High, async delegate
+                    {
+                        var text = passwordBox.Password;
+                        passwordBox.Password = "";
+                        using var sha = new SHA256Managed();
+                        byte[] textData = System.Text.Encoding.UTF8.GetBytes(text);
+                        text = null;
+                        byte[] hash = sha.ComputeHash(textData);
+                        //hash = hash.Concat(hash).Concat(hash).Concat(hash).ToArray();
+                        var aes = Aes.Create();
+                        aes.Padding = PaddingMode.Zeros;
+                        aes.Key = hash;
+                        aes.Mode = CipherMode.ECB;
+                        App.KeyEncrpyter = aes.CreateEncryptor();
+                        App.KeyDecrypter = aes.CreateDecryptor();
+                        await CredentialService.RefreshListAsync();
+                    });
                 });
             }
         }

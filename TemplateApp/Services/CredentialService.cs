@@ -37,6 +37,7 @@ namespace Protecc.Services
 
         protected internal static byte[] GetKey(VaultItem vaultItem)
         {
+            //foreach (var a in Vault.RetrieveAll()) Vault.Remove(a);
             byte[] Key;
             Key = Base32Encoding.ToBytes(Vault.Retrieve(vaultItem.Resource, vaultItem.Name).Password.DecrpytWithMasterKey());
             return Key;
